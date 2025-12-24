@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TradeShop Secure Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
+
+header {
+  background: #0f172a;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+}
+
+.container {
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  font-size: 15px;
+}
+
+.primary { background: #3b82f6; color: white; }
+.success { background: #22c55e; color: white; }
+.danger { background: #ef4444; color: white; }
+
+.hidden { display: none; }
+
+footer {
+  text-align: center;
+  padding: 12px;
+  background: #e5e7eb;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>TradeShop – Secure Trading & Shopping</header>
+
+<!-- LOGIN / SIGNUP -->
+<div class="container" id="authSection">
+
+  <div class="card">
+    <h2>🔐 Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button class="primary" onclick="login()">Login</button>
+    <p id="loginMsg"></p>
+  </div>
+
+  <div class="card">
+    <h2>📝 Create Account</h2>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Password">
+    <button class="success" onclick="signup()">Create Account</button>
+    <p id="signupMsg"></p>
+  </div>
+
+</div>
+
+<!-- DASHBOARD -->
+<div class="container hidden" id="dashboard">
+
+  <div class="card">
+    <h2>📈 Trading Dashboard</h2>
+    <p>Buy & Sell Crypto, Stocks, Forex</p>
+    <button class="success">Buy</button>
+    <button class="danger">Sell</button>
+  </div>
+
+  <div class="card">
+    <h2>🛒 Shopping</h2>
+    <p>Tools, courses & subscriptions</p>
+    <button class="primary">Add to Cart</button>
+  </div>
+
+  <div class="card">
+    <h2>💳 Wallet</h2>
+    <p>Secure balance & payments</p>
+  </div>
+
+  <div class="card">
+    <h2>🚪 Logout</h2>
+    <button class="danger" onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+<footer>© 2025 TradeShop | Secure Demo</footer>
+
+<script>
+// 🔐 Simple Hash (for demo security)
+function hash(text) {
+  return btoa(text); // base64 (demo only)
+}
+
+// SIGN UP
+function signup() {
+  const email = signupEmail.value;
+  const password = signupPassword.value;
+
+  if (!email || !password) {
+    signupMsg.innerText = "Fill all fields";
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+
+  if (users[email]) {
+    signupMsg.innerText = "Account already exists";
+    return;
+  }
+
+  users[email] = hash(password);
+  localStorage.setItem("users", JSON.stringify(users));
+
+  signupMsg.innerText = "Account created successfully ✅";
+}
+
+// LOGIN
+function login() {
+  const email = loginEmail.value;
+  const password = loginPassword.value;
+
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+
+  if (users[email] && users[email] === hash(password)) {
+    localStorage.setItem("loggedIn", email);
+    authSection.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+  } else {
+    loginMsg.innerText = "Invalid email or password ❌";
+  }
+}
+
+// LOGOUT
+function logout() {
+  localStorage.removeItem("loggedIn");
+  location.reload();
+}
+
+// AUTO LOGIN
+if (localStorage.getItem("loggedIn")) {
+  authSection.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
